@@ -1,0 +1,22 @@
+#! /usr/bin/env bash
+
+# Generic MySQL/MariaDB backup
+backup_mysql () {
+  type="mysql"
+  containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+  if [ ! -n "$containers" ]; then
+    echo "No containers for type $type"
+  fi
+
+  for container in ${containers}; do
+    echo "Creating database dump for ${container}"
+    folder=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.folder"}}' ${container})
+    mkdir -p ${folder}
+
+    user=$(get_env_from_container ${container} MYSQL_USER)
+    database=$(get_env_from_container ${container} MYSQL_DATABASE)
+    docker exec ${container} mysqldump -u $user ${database} > ${folder}/${container}_${date}.sql
+
+    post_backup ${folder}/${container}_${date}.sql
+  done
+}

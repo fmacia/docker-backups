@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+# Generic PostgreSQL backup
+backup_postgresql () {
+  type="postgresql"
+  containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+  if [ ! -n "$containers" ]; then
+    echo "No containers for type $type"
+  fi
+
+  for container in ${containers}; do
+    echo "Creating database dump for ${container}"
+    folder=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.folder"}}' ${container})
+    mkdir -p ${folder}
+
+    database=$(get_env_from_container ${container} POSTGRES_DB)
+    docker exec --user postgres ${container} pg_dump $database > ${folder}/${container}_${date}.sql
+
+    post_backup ${folder}/${container}_${date}.sql
+  done
+}
