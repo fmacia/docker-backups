@@ -18,8 +18,10 @@ set -Eeuo pipefail
 
 # Load config from env file or set defaults
 load_config () {
-  if [[ -f .env ]]; then
-    source .env
+  script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+  if [[ -f ${script_dir}/.env ]]; then
+    source ${script_dir}/.env
   fi
 
   if [[ ! -z ${TRAP+x} ]]; then
@@ -33,8 +35,8 @@ load_config () {
 
 # Source all "modules" in modules folder
 source_modules () {
-  for module_file in `ls modules`; do
-    source modules/$module_file
+  for module_file in `ls ${script_dir}/modules`; do
+    source ${script_dir}/modules/$module_file
   done
 }
 
