@@ -77,9 +77,16 @@ main () {
   load_config
   source_modules
 
-  # Launch desired modules here
-  backup_postgresql
-  backup_mysql
+  if [ -z ${ACTIVE_MODULES+x} ]; then
+    echo "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
+    exit 1
+  fi
+
+  for module in $ACTIVE_MODULES; do
+    $module
+  done
+
+  echo "Done."
 }
 
 main

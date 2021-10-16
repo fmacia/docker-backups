@@ -22,6 +22,7 @@ The following parameters may be configured changing the values in .env file:
   - **DATE_FORMAT:** Date that is appended to every backup file. By default, Year-month-day_hour-minute (without hyphens)
   - **BACKUPS_ROUTE:** Local folder (in host machine) where the backups will be saved. By default, "/opt/backups". Every backup from the same container will be saved in a subfolder (configured in container labels, detailed below)
   - **COMPRESSION:** Backups will be compressed in gzip format if value is 1
+  - **ACTIVE_MODULES:** The modules that will be used (currently the name of the function within the module). For example, only files would be: `ACTIVE_MODULES="backup_files"`
   - **DEBUG:** If set to 1, the script will print more information on screen
   - **TRAP:** (Optional) Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
   - **OWNERSHIP:** (Optional) User and group to set as author of the backup files (user:group. Example: root:root)
@@ -67,8 +68,7 @@ Note: The script assumes the container runs with the default user (postgres)
 
 ## "Modules"
 
-The script allows for backup types to be added and removed, kind of (not really modular, as right now the main file must be edited to add or remove).
+The script allows to choose the types of backups to run.
 
-- **To add a new module:** Copy one of the current modules (under the "modules" subfolder) and edit the name of the funcion, the "type" variable (it's the one that is used to find the containers) and the content of the for loop to fit your use case. Then, in the "create_backups.sh" file, add the function name under "main ()".
-
-- **To remove an existing module:** Edit the "create_backups.sh" file, comment or remove the function name under "main ()".
+- **To select the modules to run:** Edit the `ACTIVE_MODULES` variable in the env file. The elements must be the name of the function inside the module
+- **To add a new module:** Duplicate one of the current modules (under the "modules" subfolder) and edit the name of the funcion, the "type" variable (it's the one that is used to find the containers) and the content of the for loop to fit your use case. Then, add the module to the `ACTIVE_MODULES` variable
