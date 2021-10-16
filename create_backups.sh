@@ -48,19 +48,26 @@ get_env_from_container () {
   #docker inspect --format '{{ .Config.Env }}' $1 |  tr ' ' '\n' | grep $2 | sed 's/^.*=//'
 }
 
+# Steps to do after the backup has been created.
 post_backup () {
+  backup_path=$1
+
   # Compress
   if [[ $compression = 1 ]]; then
-    gzip -f $1
+    if [[ -d $1 ]]; then
+      # Backup is a folder
+      tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
+      backup_path=$1.tar.gz
+    else
+      # Backup is a file
+      gzip -f $1
+      backup_path=$1.gz
+    fi
   fi
 
   # Change ownership
   if [[ ! -z ${OWNERSHIP+x} ]]; then
-    if [[ $compression = 1 ]]; then
-      chown ${OWNERSHIP} ${1}.gz
-    else
-      chown ${OWNERSHIP} ${1}
-    fi
+    chown -R ${OWNERSHIP} $backup_path
   fi
 }
 

@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+# Generic files backup
+backup_files () {
+  type="files"
+  containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+  if [ ! -n "$containers" ]; then
+    echo "No containers for type ${type}."
+  fi
+
+  for container in ${containers}; do
+    echo "Creating files dump for ${container}."
+    folder=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.folder"}}' ${container})
+    mkdir -p ${folder}
+    source=$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.source"}}' ${container})
+    if [ -z $source ]; then
+      continue
+    fi
+
+    docker cp ${container}:${source} ${folder}/${container}_${date}
+
+    post_backup ${folder}/${container}_${date}
+  done
+}
