@@ -22,6 +22,7 @@ The following parameters may be configured changing the values in .env file:
   - **DATE_FORMAT:** Date that is appended to every backup file. By default, Year-month-day_hour-minute (without hyphens)
   - **BACKUPS_ROUTE:** Local folder (in host machine) where the backups will be saved. By default, "/opt/backups". Every backup from the same container will be saved in a subfolder (configured in container labels, detailed below)
   - **COMPRESSION:** Backups will be compressed in gzip format if value is 1
+  - **DEBUG:** If set to 1, the script will print more information on screen
   - **TRAP:** (Optional) Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
   - **OWNERSHIP:** (Optional) User and group to set as author of the backup files (user:group. Example: root:root)
     - Note: changing ownership can only be done if the script is run as root

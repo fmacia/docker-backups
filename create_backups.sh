@@ -54,6 +54,7 @@ post_backup () {
 
   # Compress
   if [[ $compression = 1 ]]; then
+    (( $DEBUG )) && echo "-Compressing backup."
     if [[ -d $1 ]]; then
       # Backup is a folder
       tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
@@ -67,6 +68,7 @@ post_backup () {
 
   # Change ownership
   if [[ ! -z ${OWNERSHIP+x} ]]; then
+    (( $DEBUG )) && echo "-Changing ownership."
     chown -R ${OWNERSHIP} $backup_path
   fi
 }
