@@ -59,6 +59,7 @@ post_backup () {
       # Backup is a folder
       tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
       backup_path=$1.tar.gz
+      rm -rf $1
     else
       # Backup is a file
       gzip -f $1
