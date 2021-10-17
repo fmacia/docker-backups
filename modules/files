@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # Generic files backup
-backup_files () {
+files () {
   type="files"
   containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then

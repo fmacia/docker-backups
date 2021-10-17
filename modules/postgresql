@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # Generic PostgreSQL backup
-backup_postgresql () {
+postgresql () {
   type="postgresql"
   containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then

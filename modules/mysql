@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # Generic MySQL/MariaDB backup
-backup_mysql () {
+mysql () {
   type="mysql"
   containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then

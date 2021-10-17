@@ -80,5 +80,5 @@ Note: The script assumes the container runs with the default user (postgres)
 
 The script allows to choose the types of backups to run.
 
-- **To select the modules to run:** Edit the `ACTIVE_MODULES` variable in the env file. The elements must be the name of the function inside the module
-- **To add a new module:** Duplicate one of the current modules (under the "modules" subfolder) and edit the name of the funcion, the "type" variable (it's the one that is used to find the containers) and the content of the for loop to fit your use case. Then, add the module to the `ACTIVE_MODULES` variable
+- **To select the modules to run:** Edit the `ACTIVE_MODULES` variable in the env file. The elements must be the name of the module (example: _files_)
+- **To add a new module:** Duplicate one of the current modules (under the "modules" subfolder) and edit the name of the function (make sure the name matches the name of the file), the "type" variable (it's the one that is used to find the containers) and the content of the for loop to fit your use case. Then, add the module to the `ACTIVE_MODULES` variablefunction inside the module
