@@ -14,7 +14,7 @@ backup_files () {
     mkdir -p ${folder}
     source=$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.source"}}' ${container})
     if [ -z $source ]; then
-      (( $DEBUG )) && echo "-No source path defined. Skipping."
+      (( $debug )) && echo "-No source path defined. Skipping."
       continue
     fi
 

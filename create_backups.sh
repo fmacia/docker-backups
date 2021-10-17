@@ -28,9 +28,11 @@ load_config () {
     trap "${TRAP}" ERR
   fi
 
+  # Defaults
   date=$(date ${DATE_FORMAT:=+%Y%m%d_%H%M})
   backups_route=${BACKUPS_ROUTE:=/opt/backups}
   compression=${COMPRESSION:=1}
+  debug=${DEBUG:=0}
 }
 
 # Source all "modules" in modules folder
@@ -54,7 +56,7 @@ post_backup () {
 
   # Compress
   if [[ $compression = 1 ]]; then
-    (( $DEBUG )) && echo "-Compressing backup."
+    (( $debug )) && echo "-Compressing backup."
     if [[ -d $1 ]]; then
       # Backup is a folder
       tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
@@ -69,7 +71,7 @@ post_backup () {
 
   # Change ownership
   if [[ ! -z ${OWNERSHIP+x} ]]; then
-    (( $DEBUG )) && echo "-Changing ownership."
+    (( $debug )) && echo "-Changing ownership."
     chown -R ${OWNERSHIP} $backup_path
   fi
 }
