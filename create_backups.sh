@@ -74,6 +74,12 @@ post_backup () {
     (( $debug )) && echo "-Changing ownership."
     chown -R ${OWNERSHIP} $backup_path
   fi
+
+  # Remove old backups
+  if [[ ! -z ${REMOVE_OLDER+x} ]]; then
+    (( $debug )) && echo "-Removing backups older than ${REMOVE_OLDER} days."
+    find $(dirname $backup_path) -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -exec rm -rf {} \;
+  fi
 }
 
 main () {

@@ -27,6 +27,8 @@ The following parameters may be configured changing the values in .env file:
   - **TRAP:** (Optional) Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
   - **OWNERSHIP:** (Optional) User and group to set as author of the backup files (user:group. Example: root:root)
     - Note: changing ownership can only be done if the script is run as root
+  - **REMOVE_OLDER:** _(Optional) Integer, default: null._ Makes the script remove backups older than the specified value (in days)
+    - Note: this will only remove older backups for the active modules with running containers only
 
 ## Container labels
 
