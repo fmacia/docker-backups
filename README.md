@@ -46,7 +46,7 @@ The script works by querying current running containers for specific labels:
   - "mysql" (for MariaDB or MySQL)
   - "postgresql" (for PostgreSQL)
   - "files" (for files)
-- **defcomsoftware.backup.folder:** The path on the host where the backups of this container will be placed
+- **defcomsoftware.backup.destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
 - **defcomsoftware.backup.source:** (Only used for type "files") The folder to copy from the container
 
 A new label will be added in the near future to allow to set the backup name instead of directly using the container name.
@@ -57,7 +57,7 @@ Example:
 ...
 labels:
   - defcomsoftware.backup.type=postgresql
-  - defcomsoftware.backup.folder=name_of_folder_where_backups_will_be_placed
+  - defcomsoftware.backup.destination=path_of_folder_where_backups_will_be_placed
 ```
 
 ## Container env variables

@@ -10,16 +10,16 @@ files () {
 
   for container in ${containers}; do
     echo "Creating files dump for ${container}."
-    folder=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.folder"}}' ${container})
-    mkdir -p ${folder}
+    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.destination"}}' ${container})
+    mkdir -p ${destination}
     source=$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.source"}}' ${container})
     if [ -z $source ]; then
       (( $debug )) && echo "-No source path defined. Skipping."
       continue
     fi
 
-    docker cp ${container}:${source} ${folder}/${container}_${date}
+    docker cp ${container}:${source} ${destination}/${container}_${date}
 
-    post_backup ${folder}/${container}_${date}
+    post_backup ${destination}/${container}_${date}
   done
 }

@@ -10,12 +10,12 @@ postgresql () {
 
   for container in ${containers}; do
     echo "Creating database dump for ${container}."
-    folder=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.folder"}}' ${container})
-    mkdir -p ${folder}
+    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.destination"}}' ${container})
+    mkdir -p ${destination}
 
     database=$(get_env_from_container ${container} POSTGRES_DB)
-    docker exec --user postgres ${container} pg_dump $database > ${folder}/${container}_${date}.sql
+    docker exec --user postgres ${container} pg_dump $database > ${destination}/${container}_${date}.sql
 
-    post_backup ${folder}/${container}_${date}.sql
+    post_backup ${destination}/${container}_${date}.sql
   done
 }
