@@ -20,14 +20,22 @@ The script can create backups for PostgreSQL and MySQL/MariaDB databases, as wel
 
 The following parameters may be configured changing the values in .env file:
   - **DATE_FORMAT:** Date that is appended to every backup file. By default, Year-month-day_hour-minute (without hyphens)
+    - _String, required, default: +%Y%m%d\_%H%M_
   - **BACKUPS_ROUTE:** Local folder (in host machine) where the backups will be saved. By default, "/opt/backups". Every backup from the same container will be saved in a subfolder (configured in container labels, detailed below)
+    - _String, required, default: /opt/backups_
   - **COMPRESSION:** Backups will be compressed in gzip format if value is 1
+    - _Integer, optional, default: 1_
   - **ACTIVE_MODULES:** The modules that will be used (currently the name of the function within the module). For example, only files would be: `ACTIVE_MODULES="backup_files"`
+    - _String, required, default: (All modules)_
   - **DEBUG:** If set to 1, the script will print more information on screen
-  - **TRAP:** (Optional) Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
+    - _Integer, optional, default: 0_
+  - **TRAP:** Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
+    - _String, optional, default: null_
   - **OWNERSHIP:** (Optional) User and group to set as author of the backup files (user:group. Example: root:root)
+    - _String, optional, default: null_
     - Note: changing ownership can only be done if the script is run as root
-  - **REMOVE_OLDER:** _(Optional) Integer, default: null._ Makes the script remove backups older than the specified value (in days)
+  - **REMOVE_OLDER:** Makes the script remove backups older than the specified value (in days)
+    - _Integer, optional, default: null_
     - Note: this will only remove older backups for the active modules with running containers only
 
 ## Container labels
