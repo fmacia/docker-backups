@@ -22,7 +22,7 @@ load_config () {
     source ${script_dir}/.env
   fi
 
-  if [[ ! -z ${TRAP+x} ]]; then
+  if [[ ! -z ${TRAP:=} ]]; then
     trap "${TRAP}" ERR
   fi
 
@@ -85,13 +85,13 @@ post_backup () {
   fi
 
   # Change ownership
-  if [[ ! -z ${OWNERSHIP+x} ]]; then
+  if [[ ! -z ${OWNERSHIP:=} ]]; then
     echo_verbose "-Changing ownership."
     chown -R ${OWNERSHIP} $backup_path
   fi
 
   # Remove old backups
-  if [[ ! -z ${REMOVE_OLDER+x} ]]; then
+  if [[ ! -z ${REMOVE_OLDER:=} ]]; then
     echo_verbose "-Removing backups older than ${REMOVE_OLDER} days."
     find $(dirname $backup_path) -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -exec rm -rf {} \;
   fi
@@ -101,7 +101,7 @@ main () {
   load_config
   source_modules
 
-  if [ -z ${ACTIVE_MODULES+x} ]; then
+  if [ -z ${ACTIVE_MODULES:=} ]; then
     echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
     exit 1
   fi
