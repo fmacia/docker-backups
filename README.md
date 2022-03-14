@@ -73,6 +73,7 @@ The script reuses the env variables of the container to know things like the dat
 ### For PostgreSQL:
 
 - POSTGRES_DB: The database name
+- POSTGRES_USER: The postgres user (defaults to "postgres" if not set)
 
 Note: The script assumes the container runs with the default user (postgres)
 
