@@ -14,8 +14,6 @@ set -Eeuo pipefail
 # Uncomment this to see the commands that are executing.
 #set -x
 
-# Helpers
-
 # Load config from env file or set defaults
 load_config () {
   script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -43,14 +41,19 @@ source_modules () {
 }
 
 # Get an env variable from a container
-# Arguments: container name, variable name (without dollar sign)
+# Arguments:
+# - Container name
+# - Variable name (without dollar sign)
 get_env_from_container () {
-  docker exec $1 bash -c 'echo "$'$2'"'
-  # Alternative use for a stopped container:
-  #docker inspect --format '{{ .Config.Env }}' $1 |  tr ' ' '\n' | grep $2 | sed 's/^.*=//'
+  container=$1
+  var_name=$2
+
+  docker exec $container bash -c 'echo "$'$var_name'"'
 }
 
 # Steps to do after the backup has been created.
+# Arguments:
+# - Backup path
 post_backup () {
   backup_path=$1
 
