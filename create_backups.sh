@@ -97,10 +97,8 @@ post_backup () {
   fi
 }
 
-main () {
-  load_config
-  source_modules
-
+# Execute all active modules
+run_modules () {
   if [ -z ${ACTIVE_MODULES:=} ]; then
     echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
     exit 1
@@ -126,6 +124,12 @@ main () {
       $module $container
     done
   done
+}
+
+main () {
+  load_config
+  source_modules
+  run_modules
 
   echo_verbose "Done."
 }
