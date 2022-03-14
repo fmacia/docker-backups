@@ -44,12 +44,12 @@ The following parameters may be configured changing the values in .env file:
 
 The script works by querying current running containers for specific labels:
 
-- **defcomsoftware.backup.type:** The type of backup to create. Currently, the script supports:
+- **com.defcomsoftware.backup.type:** The type of backup to create. Currently, the script supports:
   - "mysql" (for MariaDB or MySQL)
   - "postgresql" (for PostgreSQL)
   - "files" (for files)
-- **defcomsoftware.backup.destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
-- **defcomsoftware.backup.source:** (Only used for type "files") The folder to copy from the container
+- **com.defcomsoftware.backup.destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
+- **com.defcomsoftware.backup.files_source:** (Only used for type "files") The folder to copy from the container
 
 A new label will be added in the near future to allow to set the backup name instead of directly using the container name.
 
@@ -58,8 +58,8 @@ Example:
 ```
 ...
 labels:
-  - defcomsoftware.backup.type=postgresql
-  - defcomsoftware.backup.destination=path_of_folder_where_backups_will_be_placed
+  - com.defcomsoftware.backup.type=postgresql
+  - com.defcomsoftware.backup.destination=path_of_folder_where_backups_will_be_placed
 ```
 
 ## Container env variables

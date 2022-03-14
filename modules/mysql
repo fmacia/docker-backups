@@ -3,14 +3,14 @@
 # Generic MySQL/MariaDB backup
 mysql () {
   type="mysql"
-  containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+  containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then
     echo_verbose "No containers for type ${type}."
   fi
 
   for container in ${containers}; do
     echo_verbose "Creating database dump for ${container}."
-    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.destination"}}' ${container})
+    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
     mkdir -p ${destination}
 
     user=$(get_env_from_container ${container} MYSQL_USER)

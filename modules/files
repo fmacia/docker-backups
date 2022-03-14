@@ -3,16 +3,16 @@
 # Generic files backup
 files () {
   type="files"
-  containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+  containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then
     echo_verbose "No containers for type ${type}."
   fi
 
   for container in ${containers}; do
     echo_verbose "Creating files dump for ${container}."
-    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.destination"}}' ${container})
+    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
     mkdir -p ${destination}
-    source=$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.source"}}' ${container})
+    source=$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.files_source"}}' ${container})
     if [ -z $source ]; then
       echo_verbose "-No source path defined. Skipping."
       continue
