@@ -5,11 +5,11 @@ mysql () {
   type="mysql"
   containers=$(docker ps --filter="label=defcomsoftware.backup.type=${type}" --format "{{.Names}}")
   if [ ! -n "$containers" ]; then
-    echo "No containers for type ${type}."
+    echo_verbose "No containers for type ${type}."
   fi
 
   for container in ${containers}; do
-    echo "Creating database dump for ${container}."
+    echo_verbose "Creating database dump for ${container}."
     destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "defcomsoftware.backup.destination"}}' ${container})
     mkdir -p ${destination}
 

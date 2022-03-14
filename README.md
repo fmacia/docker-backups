@@ -37,6 +37,8 @@ The following parameters may be configured changing the values in .env file:
   - **REMOVE_OLDER:** Makes the script remove backups older than the specified value (in days)
     - _Integer, optional, default: null_
     - Note: this will only remove older backups for the active modules with running containers only
+  - **VERBOSE:** Controls if the script must output status messages as it runs
+    - _Integer, optional, default: 1_
 
 ## Container labels
 
