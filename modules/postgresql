@@ -1,23 +1,15 @@
 #! /usr/bin/env bash
 
 # Generic PostgreSQL backup
+# Arguments:
+# - Container name
 postgresql () {
-  type="postgresql"
-  containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
-  if [ ! -n "$containers" ]; then
-    echo_verbose "No containers for type ${type}."
-  fi
+  container=$1
+  destination=$2
 
-  for container in ${containers}; do
-    echo_verbose "Creating database dump for ${container}."
-    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
-    mkdir -p ${destination}
+  user=$(get_env_from_container ${container} POSTGRES_USER)
+  database=$(get_env_from_container ${container} POSTGRES_DB)
+  docker exec --user ${user:=postgres} ${container} pg_dump $database > ${destination}/${container}_${date}.sql
 
-    user=$(get_env_from_container ${container} POSTGRES_USER)
-    database=$(get_env_from_container ${container} POSTGRES_DB)
-
-    docker exec --user ${user:=postgres} ${container} pg_dump $database > ${destination}/${container}_${date}.sql
-
-    post_backup ${destination}/${container}_${date}.sql
-  done
+  post_backup ${destination}/${container}_${date}.sql
 }

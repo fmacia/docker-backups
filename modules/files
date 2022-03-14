@@ -1,25 +1,19 @@
 #! /usr/bin/env bash
 
 # Generic files backup
+# Arguments:
+# - Container name
 files () {
-  type="files"
-  containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
-  if [ ! -n "$containers" ]; then
-    echo_verbose "No containers for type ${type}."
+  container=$1
+  destination=$2
+
+  source=$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.files_source"}}' ${container})
+  if [ -z $source ]; then
+    echo_verbose "-No source path defined. Skipping."
+    return
   fi
 
-  for container in ${containers}; do
-    echo_verbose "Creating files dump for ${container}."
-    destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
-    mkdir -p ${destination}
-    source=$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.files_source"}}' ${container})
-    if [ -z $source ]; then
-      echo_verbose "-No source path defined. Skipping."
-      continue
-    fi
+  docker cp ${container}:${source} ${destination}/${container}_${date}
 
-    docker cp ${container}:${source} ${destination}/${container}_${date}
-
-    post_backup ${destination}/${container}_${date}
-  done
+  post_backup ${destination}/${container}_${date}
 }

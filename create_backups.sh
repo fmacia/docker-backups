@@ -107,7 +107,24 @@ main () {
   fi
 
   for module in $ACTIVE_MODULES; do
-    $module
+    type=$module
+    containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+    if [ ! -n "$containers" ]; then
+      echo_verbose "No containers for type ${type}."
+    fi
+
+    for container in ${containers}; do
+      echo_verbose "Creating database dump for ${container}."
+
+      destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
+      if [ -z $destination ]; then
+        echo_verbose "-No destination path defined. Skipping."
+        continue
+      fi
+      mkdir -p ${destination}
+
+      $module $container
+    done
   done
 
   echo_verbose "Done."
