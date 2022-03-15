@@ -7,7 +7,7 @@ files () {
   container=$1
   destination=$2
 
-  source=$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.files_source"}}' "${container}")
+  source=$(get_container_label "${container}" "com.defcomsoftware.backup.files_source")
   if [ -z "$source" ]; then
     echo_verbose "-No source path defined. Skipping."
     return

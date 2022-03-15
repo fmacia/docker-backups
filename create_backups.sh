@@ -52,6 +52,17 @@ get_env_from_container () {
   docker exec "$container" bash -c 'echo "$'"$var_name"'"'
 }
 
+# Get the value of a container label
+# Arguments:
+# - Container name
+# - Label name
+get_container_label () {
+  container=$1
+  label=$2
+
+  docker inspect -f "{{ index .Config.Labels \"$label\"}}" "$container"
+}
+
 # Prints message only if verbose is active
 # Arguments:
 # - String to print
@@ -116,7 +127,7 @@ run_modules () {
     for container in ${containers}; do
       echo_verbose "Creating ${type} backup for ${container}."
 
-      destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' "${container}")
+      destination=${backups_route}/$(get_container_label "${container}" "com.defcomsoftware.backup.destination")
       if [ -z "$destination" ]; then
         echo_verbose "-No destination path defined. Skipping."
         continue
