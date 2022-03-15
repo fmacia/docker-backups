@@ -114,7 +114,7 @@ run_modules () {
     fi
 
     for container in ${containers}; do
-      echo_verbose "Creating database dump for ${container}."
+      echo_verbose "Creating ${type} backup for ${container}."
 
       destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' "${container}")
       if [ -z "$destination" ]; then
