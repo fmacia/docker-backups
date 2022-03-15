@@ -8,9 +8,9 @@ mysql () {
   container=$1
   destination=$2
 
-  user=$(get_env_from_container ${container} MYSQL_USER)
-  database=$(get_env_from_container ${container} MYSQL_DATABASE)
-  docker exec ${container} mysqldump -u $user ${database} > ${destination}/${container}_${date}.sql
+  user=$(get_env_from_container "${container}" MYSQL_USER)
+  database=$(get_env_from_container "${container}" MYSQL_DATABASE)
+  docker exec "${container}" mysqldump -u "$user" "${database}" > "${destination}"/"${container}"_"${date}".sql
 
-  post_backup ${destination}/${container}_${date}.sql
+  post_backup "${destination}"/"${container}"_"${date}".sql
 }

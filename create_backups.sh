@@ -19,15 +19,16 @@ load_config () {
   script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
   if [[ -f ${script_dir}/.env ]]; then
-    source ${script_dir}/.env
+    source "${script_dir}"/.env
   fi
 
-  if [[ ! -z ${TRAP:=} ]]; then
+  if [[ -n ${TRAP:=} ]]; then
+    # shellcheck disable=SC2064
     trap "${TRAP}" ERR
   fi
 
   # Defaults
-  date=$(date ${DATE_FORMAT:=+%Y%m%d_%H%M})
+  date=$(date "${DATE_FORMAT:=+%Y%m%d_%H%M}")
   backups_route=${BACKUPS_ROUTE:=/opt/backups}
   compression=${COMPRESSION:=1}
   verbose=${VERBOSE:=1}
@@ -35,8 +36,8 @@ load_config () {
 
 # Source all "modules" in modules folder
 source_modules () {
-  for module_file in `ls ${script_dir}/modules`; do
-    source ${script_dir}/modules/$module_file
+  for module_file in "${script_dir}"/modules/*; do
+    source "${module_file}"
   done
 }
 
@@ -48,7 +49,7 @@ get_env_from_container () {
   container=$1
   var_name=$2
 
-  docker exec $container bash -c 'echo "$'$var_name'"'
+  docker exec "$container" bash -c 'echo "$'"$var_name"'"'
 }
 
 # Prints message only if verbose is active
@@ -60,7 +61,7 @@ echo_verbose () {
     return
   fi
 
-  echo $string
+  echo "$string"
 }
 
 # Steps to do after the backup has been created.
@@ -74,32 +75,33 @@ post_backup () {
     echo_verbose "-Compressing backup."
     if [[ -d $1 ]]; then
       # Backup is a folder
-      tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
-      backup_path=$1.tar.gz
-      rm -rf $1
+      # tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
+      tar -czf "$1".tar.gz -C "$(dirname "$1")" "$(basename "$1")"
+      backup_path="$1".tar.gz
+      rm -rf "$1"
     else
       # Backup is a file
-      gzip -f $1
-      backup_path=$1.gz
+      gzip -f "$1"
+      backup_path="$1".gz
     fi
   fi
 
   # Change ownership
-  if [[ ! -z ${OWNERSHIP:=} ]]; then
+  if [[ -n ${OWNERSHIP:=} ]]; then
     echo_verbose "-Changing ownership."
-    chown -R ${OWNERSHIP} $backup_path
+    chown -R ${OWNERSHIP} "$backup_path"
   fi
 
   # Remove old backups
-  if [[ ! -z ${REMOVE_OLDER:=} ]]; then
+  if [[ -n ${REMOVE_OLDER:=} ]]; then
     echo_verbose "-Removing backups older than ${REMOVE_OLDER} days."
-    find $(dirname $backup_path) -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -exec rm -rf {} \;
+    find "$(dirname "$backup_path")" -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -exec rm -rf {} \;
   fi
 }
 
 # Execute all active modules
 run_modules () {
-  if [ -z ${ACTIVE_MODULES:=} ]; then
+  if [[ -z ${ACTIVE_MODULES:=} ]]; then
     echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
     exit 1
   fi
@@ -107,21 +109,21 @@ run_modules () {
   for module in $ACTIVE_MODULES; do
     type=$module
     containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
-    if [ ! -n "$containers" ]; then
+    if [ -z "$containers" ]; then
       echo_verbose "No containers for type ${type}."
     fi
 
     for container in ${containers}; do
       echo_verbose "Creating database dump for ${container}."
 
-      destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' ${container})
-      if [ -z $destination ]; then
+      destination=${backups_route}/$(docker inspect -f '{{ index .Config.Labels "com.defcomsoftware.backup.destination"}}' "${container}")
+      if [ -z "$destination" ]; then
         echo_verbose "-No destination path defined. Skipping."
         continue
       fi
-      mkdir -p ${destination}
+      mkdir -p "${destination}"
 
-      $module $container
+      $module "$container" "$destination"
     done
   done
 }
