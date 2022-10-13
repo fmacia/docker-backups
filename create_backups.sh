@@ -106,7 +106,7 @@ post_backup () {
   # Remove old backups
   if [[ -n ${REMOVE_OLDER:=} ]]; then
     echo_verbose "-Removing backups older than ${REMOVE_OLDER} days."
-    find "$(dirname "$backup_path")" -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -exec rm -rf {} \;
+    find "$(dirname "$backup_path")" -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -type f -exec rm -rf {} \;
   fi
 }
 
