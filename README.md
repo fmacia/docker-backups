@@ -25,7 +25,7 @@ The following parameters may be configured changing the values in .env file:
     - _String, required, default: /opt/backups_
   - **COMPRESSION:** Backups will be compressed in gzip format if value is 1
     - _Integer, optional, default: 1_
-  - **ACTIVE_MODULES:** The modules that will be used (currently the name of the function within the module). For example, only files would be: `ACTIVE_MODULES="backup_files"`
+  - **ACTIVE_MODULES:** The modules that will be used (currently the name of the function within the module). For example, only files would be: `ACTIVE_MODULES="files"`
     - _String, required, default: (All modules)_
   - **DEBUG:** If set to 1, the script will print more information on screen
     - _Integer, optional, default: 0_
@@ -48,8 +48,10 @@ The script works by querying current running containers for specific labels:
   - "mysql" (for MariaDB or MySQL)
   - "postgresql" (for PostgreSQL)
   - "files" (for files)
+  - "drush" (for Drush)
 - **com.defcomsoftware.backup.destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
 - **com.defcomsoftware.backup.files_source:** (Only used for type "files") The folder to copy from the container
+- **com.defcomsoftware.backup.drush_path:** (Only used for type "drush") The drush executable path
 
 A new label will be added in the near future to allow to set the backup name instead of directly using the container name.
 
@@ -79,6 +81,12 @@ Additionally, some method to prevent mysql from asking the password is needed. F
 - POSTGRES_USER: The postgres user (defaults to "postgres" if not set)
 
 Note: The script assumes the container runs with the default user (postgres)
+
+## Requirements
+
+### Drush
+
+The Drush module requires `mysqldump` command inside the container and the drush file specified in `drush_path` to be executable.
 
 ## "Modules"
 
