@@ -86,7 +86,6 @@ post_backup () {
     echo_verbose "-Compressing backup."
     if [[ -d $1 ]]; then
       # Backup is a folder
-      # tar -czf $1.tar.gz -C $(dirname $1) $(basename $1)
       tar -czf "$1".tar.gz -C "$(dirname "$1")" "$(basename "$1")"
       backup_path="$1".tar.gz
       rm -rf "$1"
@@ -119,7 +118,7 @@ run_modules () {
 
   for module in $ACTIVE_MODULES; do
     type=$module
-    containers=$(docker ps --filter="label=com.defcomsoftware.backup.type=${type}" --format "{{.Names}}")
+    containers=$(docker ps --filter="label=com.defcomsoftware.backup.${type}=true" --format "{{.Names}}")
     if [ -z "$containers" ]; then
       echo_verbose "No containers for type ${type}."
     fi
@@ -127,7 +126,7 @@ run_modules () {
     for container in ${containers}; do
       echo_verbose "Creating ${type} backup for ${container}."
 
-      destination=${backups_route}/$(get_container_label "${container}" "com.defcomsoftware.backup.destination")
+      destination=${backups_route}/$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.destination")
       if [ -z "$destination" ]; then
         echo_verbose "-No destination path defined. Skipping."
         continue

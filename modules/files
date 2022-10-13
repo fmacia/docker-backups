@@ -7,7 +7,7 @@ files () {
   container=$1
   destination=$2
 
-  source=$(get_container_label "${container}" "com.defcomsoftware.backup.files_source")
+  source=$(get_container_label "${container}" "com.defcomsoftware.backup.files.source")
   if [ -z "$source" ]; then
     echo_verbose "-No source path defined. Skipping."
     return

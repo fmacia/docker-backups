@@ -44,14 +44,14 @@ The following parameters may be configured changing the values in .env file:
 
 The script works by querying current running containers for specific labels:
 
-- **com.defcomsoftware.backup.type:** The type of backup to create. Currently, the script supports:
+- **com.defcomsoftware.backup.[type]=true:** The type of backup to create. Currently, the script supports:
   - "mysql" (for MariaDB or MySQL)
   - "postgresql" (for PostgreSQL)
   - "files" (for files)
   - "drush" (for Drush)
-- **com.defcomsoftware.backup.destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
-- **com.defcomsoftware.backup.files_source:** (Only used for type "files") The folder to copy from the container
-- **com.defcomsoftware.backup.drush_path:** (Only used for type "drush") The drush executable path
+- **com.defcomsoftware.backup.[type].destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
+- **com.defcomsoftware.backup.files.source:** (Only used for type "files") The folder to copy from the container
+- **com.defcomsoftware.backup.drush.path:** (Only used for type "drush") The drush executable path
 
 A new label will be added in the near future to allow to set the backup name instead of directly using the container name.
 
