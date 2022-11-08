@@ -60,8 +60,8 @@ Example:
 ```
 ...
 labels:
-  - com.defcomsoftware.backup.type=postgresql
-  - com.defcomsoftware.backup.destination=path_of_folder_where_backups_will_be_placed
+  - com.defcomsoftware.backup.postgresql=true
+  - com.defcomsoftware.backup.postgresql.destination=path_of_folder_where_backups_will_be_placed
 ```
 
 ## Container env variables
