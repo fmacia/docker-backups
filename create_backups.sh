@@ -36,8 +36,16 @@ load_config () {
 
 # Source all "modules" in modules folder
 source_modules () {
+  if [[ -z ${ACTIVE_MODULES:=} ]]; then
+    echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
+    exit 1
+  fi
+
   for module_file in "${script_dir}"/modules/*; do
-    source "${module_file}"
+    module_name=$(basename $module_file)
+    if [[ ${ACTIVE_MODULES} =~ $module_name ]]; then
+      source "${module_file}"
+    fi
   done
 }
 
@@ -111,11 +119,6 @@ post_backup () {
 
 # Execute all active modules
 run_modules () {
-  if [[ -z ${ACTIVE_MODULES:=} ]]; then
-    echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
-    exit 1
-  fi
-
   for module in $ACTIVE_MODULES; do
     type=$module
     containers=$(docker ps --filter="label=com.defcomsoftware.backup.${type}=true" --format "{{.Names}}")
