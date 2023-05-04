@@ -19,6 +19,7 @@ load_config () {
   script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
   if [[ -f ${script_dir}/.env ]]; then
+    # shellcheck disable=SC1094
     source "${script_dir}"/.env
   fi
 
@@ -42,8 +43,10 @@ source_modules () {
   fi
 
   for module_file in "${script_dir}"/modules/*; do
-    module_name=$(basename $module_file)
+    module_name=$(basename "${module_file}")
     if [[ ${ACTIVE_MODULES} =~ $module_name ]]; then
+      # shellcheck disable=SC1094
+      # shellcheck source=/dev/null
       source "${module_file}"
     fi
   done
