@@ -4,16 +4,16 @@ Simple bash script to generate backups from containers I use for myself.
 
 It reuses the database container by reading info from labels and env variables. The backups are named "[CONTAINER_NAME]_[DATE].sql" (plus ".gz" at the end if compressed).
 
-The script can create backups for PostgreSQL and MySQL/MariaDB databases, as well as files.
+The script can create backups for PostgreSQL SQLite and MySQL/MariaDB databases, as well as files.
 
 **Note:** The script has been tested with the following docker images: [Postgres](https://hub.docker.com/_/postgres/), [MariaDB](https://hub.docker.com/_/mariadb) and [Drupal](https://hub.docker.com/_/drupal)
 
 ## How to use
 
 1. Clone repository or download files
-2. Copy ".env.example" to ".env" and adjust configuration variables (detailed below)
-3. Add labels to the database containers to backup (detailed below). The container must be recreated afterwards (`docker-compose up -d`)
-4. Give execution permission to "create_backups.sh" (or run it with `bash -c [NAME]`)
+2. Copy ".env.example" to ".env" and adjust configuration variables (detailed in section "Script configuration")
+3. Add labels to the database containers to backup (detailed in section "Container labels"). The container must be recreated afterwards (`docker-compose up -d`)
+4. Give execution permission to "create_backups.sh" (or run it with `bash -c create_backups.sh`)
 5. Execute "create_backups.sh" or insert it in cron
 
 ## Script configuration
@@ -44,16 +44,28 @@ The following parameters may be configured changing the values in .env file:
 
 The script works by querying current running containers for specific labels:
 
+### General labels
+
 - **com.defcomsoftware.backup.[type]=true:** The type of backup to create. Currently, the script supports:
   - "mysql" (for MariaDB or MySQL)
   - "postgresql" (for PostgreSQL)
   - "files" (for files)
   - "drush" (for Drush)
+  - "sqlite" (for SQLite)
 - **com.defcomsoftware.backup.[type].destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
-- **com.defcomsoftware.backup.files.source:** (Only used for type "files") The folder to copy from the container
+
+### Files module labels
+
+- **com.defcomsoftware.backup.files.source:** The folder to copy from the container
+
+### Drush module labels
+
 - **com.defcomsoftware.backup.drush.path:** (Only used for type "drush") The drush executable path
 
-A new label will be added in the near future to allow to set the backup name instead of directly using the container name.
+### SQLite module labels
+
+- **com.defcomsoftware.backup.sqlite.source:** The database to backup
+- **com.defcomsoftware.backup.sqlite.host:** Set it to 1 to use the sqlite command from the host machine, as some containers use sqlite but do not have the sqlite3 binary included. If set, the srouce label must be a path from the host machine
 
 Example:
 
