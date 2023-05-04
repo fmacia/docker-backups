@@ -13,7 +13,7 @@ files () {
     return
   fi
 
-  docker cp "${container}":"${source}" "${destination}"/"${container}"_"${date}"
+  docker cp "${container}:${source}" "${destination}"
 
-  post_backup "${destination}"/"${container}"_"${date}"
+  post_backup "${destination}"
 }

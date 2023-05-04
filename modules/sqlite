@@ -7,6 +7,7 @@
 sqlite () {
   container=$1
   destination=$2
+
   database_path=$(get_container_label "${container}" "com.defcomsoftware.backup.sqlite.source")
   if [ -z "$database_path" ]; then
     echo_verbose "## No database source path defined. Skipping..."
@@ -15,11 +16,11 @@ sqlite () {
 
   host=$(get_container_label "${container}" "com.defcomsoftware.backup.sqlite.host")
   if [[ $host = "true" ]]; then
-    sqlite3 "$database_path" ".backup ${destination}/${container}_${date}.sqlite3"
+    sqlite3 "$database_path" ".backup ${destination}.sqlite3"
   else
     docker exec "${container}" sqlite3 "$database_path" ".backup /tmp/backup.sqlite3"
-    docker cp "${container}":"/tmp/backup.sqlite3" "${destination}"/"${container}"_"${date}".sqlite3
+    docker cp "${container}":"/tmp/backup.sqlite3" "${destination}.sqlite3"
   fi
 
-  post_backup "${destination}"/"${container}"_"${date}".sqlite3
+  post_backup "${destination}.sqlite3"
 }

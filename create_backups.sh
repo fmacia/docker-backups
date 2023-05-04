@@ -128,17 +128,23 @@ run_modules () {
     fi
 
     for container in ${containers}; do
-      echo_verbose "# Creating ${type} backup for ${container}"
+      echo_verbose "# Creating ${type} backup for ${container} #"
       echo_verbose ""
 
-      destination=${backups_route}/$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.destination")
-      if [ -z "$destination" ]; then
+      destination_folder=$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.destination")
+      if [ -z "${destination_folder}" ]; then
         echo_verbose "## No destination path defined. Skipping."
         continue
       fi
+      mkdir -p "${backups_route}/${destination_folder}"
 
-      mkdir -p "${destination}"
-      $module "$container" "$destination"
+      name=$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.name")
+      if [ -z "${name}" ]; then
+        name=${container}
+      fi
+      destination=${backups_route}/${destination_folder}/${name}_${date}
+
+      "${module}" "${container}" "${destination}"
       echo_verbose ""
     done
   done

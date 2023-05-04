@@ -9,7 +9,7 @@ postgresql () {
 
   user=$(get_env_from_container "${container}" POSTGRES_USER)
   database=$(get_env_from_container "${container}" POSTGRES_DB)
-  docker exec --user "${user:=postgres}" "${container}" pg_dump "$database" > "${destination}"/"${container}"_"${date}".sql
+  docker exec --user "${user:=postgres}" "${container}" pg_dump "$database" > "${destination}.sql"
 
-  post_backup "${destination}"/"${container}"_"${date}".sql
+  post_backup "${destination}.sql"
 }
