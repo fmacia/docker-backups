@@ -37,7 +37,7 @@ load_config () {
 # Source all "modules" in modules folder
 source_modules () {
   if [[ -z ${ACTIVE_MODULES:=} ]]; then
-    echo_verbose "There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
+    echo_verbose "WARNING: There are no active modules. Please fill at least one in ACTIVE_MODULES var in env file."
     exit 1
   fi
 
@@ -91,7 +91,7 @@ post_backup () {
 
   # Compress
   if [[ $compression = 1 ]]; then
-    echo_verbose "-Compressing backup."
+    echo_verbose "## Compressing backup."
     if [[ -d $1 ]]; then
       # Backup is a folder
       tar -czf "$1".tar.gz -C "$(dirname "$1")" "$(basename "$1")"
@@ -106,13 +106,13 @@ post_backup () {
 
   # Change ownership
   if [[ -n ${OWNERSHIP:=} ]]; then
-    echo_verbose "-Changing ownership."
+    echo_verbose "## Changing ownership to ${OWNERSHIP}."
     chown -R ${OWNERSHIP} "$backup_path"
   fi
 
   # Remove old backups
   if [[ -n ${REMOVE_OLDER:=} ]]; then
-    echo_verbose "-Removing backups older than ${REMOVE_OLDER} days."
+    echo_verbose "## Removing backups older than ${REMOVE_OLDER} days."
     find "$(dirname "$backup_path")" -maxdepth 1 -mindepth 1 -mtime +${REMOVE_OLDER} -type f -exec rm -rf {} \;
   fi
 }
@@ -123,20 +123,23 @@ run_modules () {
     type=$module
     containers=$(docker ps --filter="label=com.defcomsoftware.backup.${type}=true" --format "{{.Names}}")
     if [ -z "$containers" ]; then
-      echo_verbose "No containers for type ${type}."
+      echo_verbose "No containers for type ${type}. Skipping..."
+      echo_verbose ""
     fi
 
     for container in ${containers}; do
-      echo_verbose "Creating ${type} backup for ${container}."
+      echo_verbose "# Creating ${type} backup for ${container}"
+      echo_verbose ""
 
       destination=${backups_route}/$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.destination")
       if [ -z "$destination" ]; then
-        echo_verbose "-No destination path defined. Skipping."
+        echo_verbose "## No destination path defined. Skipping."
         continue
       fi
-      mkdir -p "${destination}"
 
+      mkdir -p "${destination}"
       $module "$container" "$destination"
+      echo_verbose ""
     done
   done
 }
@@ -146,7 +149,7 @@ main () {
   source_modules
   run_modules
 
-  echo_verbose "Done."
+  echo_verbose "-- Backup process finished --"
 }
 
 main

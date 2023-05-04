@@ -9,7 +9,7 @@ drush () {
   destination=$2
   drush_path=$(get_container_label "${container}" "com.defcomsoftware.backup.drush.path")
   if [ -z "$drush_path" ]; then
-    echo_verbose "-No drush path defined. Skipping."
+    echo_verbose "## No drush path defined. Skipping..."
     return
   fi
 

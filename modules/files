@@ -9,7 +9,7 @@ files () {
 
   source=$(get_container_label "${container}" "com.defcomsoftware.backup.files.source")
   if [ -z "$source" ]; then
-    echo_verbose "-No source path defined. Skipping."
+    echo_verbose "## No source path defined. Skipping..."
     return
   fi
 
