@@ -53,7 +53,7 @@ The script works by querying current running containers for specific labels:
   - "drush" (for Drush)
   - "sqlite" (for SQLite)
 - **com.defcomsoftware.backup.[type].destination:** The path on the host where the backups of this container will be placed (relative to the BACKUPS_ROUTE parameter)
-- **com.defcomsoftware.backup.[type].name:** Optional. Name of the backup (date will be appended to this). Default value is the name of the container
+- **com.defcomsoftware.backup.[type].name:** Optional. Name of the backup. "%DATE%" (without quotes) will be replaced with the date. Default value is the name of the container
 
 ### Files module labels
 

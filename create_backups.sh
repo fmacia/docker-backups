@@ -142,10 +142,12 @@ run_modules () {
       mkdir -p "${backups_route}/${destination_folder}"
 
       name=$(get_container_label "${container}" "com.defcomsoftware.backup.${type}.name")
-      if [ -z "${name}" ]; then
-        name=${container}
+      if [ -n "${name}" ]; then
+        name="${name/\%DATE\%/$date}"
+      else
+        name="${container}_${date}"
       fi
-      destination=${backups_route}/${destination_folder}/${name}_${date}
+      destination=${backups_route}/${destination_folder}/${name}
 
       "${module}" "${container}" "${destination}"
       echo_verbose ""
