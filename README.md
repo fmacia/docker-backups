@@ -27,8 +27,6 @@ The following parameters may be configured changing the values in .env file:
     - _Integer, optional, default: 1_
   - **ACTIVE_MODULES:** The modules that will be used (currently the name of the function within the module). For example, only files would be: `ACTIVE_MODULES="files"`
     - _String, required, default: (All modules)_
-  - **DEBUG:** If set to 1, the script will print more information on screen
-    - _Integer, optional, default: 0_
   - **TRAP:** Command to execute if there is an error executing the backups. Useful for notifications via email, etc.
     - _String, optional, default: null_
   - **OWNERSHIP:** (Optional) User and group to set as author of the backup files (user:group. Example: root:root)

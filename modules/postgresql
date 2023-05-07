@@ -3,6 +3,7 @@
 # Generic PostgreSQL backup
 # Arguments:
 # - Container name
+# - Destination path
 postgresql () {
   container=$1
   destination=$2

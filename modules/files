@@ -3,6 +3,7 @@
 # Generic files backup
 # Arguments:
 # - Container name
+# - Destination path
 files () {
   container=$1
   destination=$2
